@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">AutoTapper</string>
     <string name="service_label">Auto Tapper Service</string>
-    <string name="signing_key">CHANGE_ME_TO_A_RANDOM_LONG_SECRET</string>
+    <string name="signing_key">SHOHAN999</string>
 </resources>
