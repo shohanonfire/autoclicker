@@ -19,13 +19,6 @@ jobs:
         distribution: temurin
         java-version: '17'
 
-    - name: Install Gradle & generate wrapper
-      run: |
-        curl -s "https://get.sdkman.io" | bash
-        source "$HOME/.sdkman/bin/sdkman-init.sh"
-        sdk install gradle 8.7
-        gradle wrapper --gradle-version 8.7
-
     - name: Make gradlew executable
       run: chmod +x ./gradlew
 
@@ -39,7 +32,7 @@ jobs:
           -dname "CN=Android Debug,O=Android,C=US"
 
     - name: Build Debug APK
-      run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
+      run: ./gradlew assembleDebug --no-daemon --stacktrace
 
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
