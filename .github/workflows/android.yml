@@ -19,28 +19,16 @@ jobs:
         distribution: temurin
         java-version: '17'
 
-    # Install Android SDK + build-tools/platforms
-    - name: Set up Android SDK
-      uses: android-actions/setup-android@v3
-      with:
-        packages: |
-          platform-tools
-          platforms;android-34
-          build-tools;34.0.0
-
-    # Install Gradle (system) and generate wrapper
     - name: Install Gradle & generate wrapper
       run: |
         curl -s "https://get.sdkman.io" | bash
         source "$HOME/.sdkman/bin/sdkman-init.sh"
         sdk install gradle 8.7
-        gradle --version
         gradle wrapper --gradle-version 8.7
 
     - name: Make gradlew executable
       run: chmod +x ./gradlew
 
-    # Create a debug keystore so the APK is signed (v1+v2)
     - name: Generate debug keystore
       run: |
         mkdir -p $HOME/.android
@@ -50,11 +38,9 @@ jobs:
           -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 \
           -dname "CN=Android Debug,O=Android,C=US"
 
-    # Build the APK
     - name: Build Debug APK
       run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
 
-    # Upload the APK artifact
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
       with:
