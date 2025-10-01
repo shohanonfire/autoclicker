@@ -19,17 +19,7 @@ jobs:
         distribution: temurin
         java-version: '17'
 
-    # 1) Use Gradle Build Action to run "gradle wrapper" even if wrapper is missing
-    - name: Generate Gradle Wrapper (8.7)
-      uses: gradle/gradle-build-action@v3
-      with:
-        gradle-version: '8.7'
-        arguments: wrapper
-
-    - name: Make gradlew executable
-      run: chmod +x ./gradlew
-
-    # 2) Install Android SDK pieces (cmdline-tools + platforms + build-tools)
+    # Android SDK + build-tools ইনস্টল
     - name: Set up Android SDK
       uses: android-actions/setup-android@v3
       with:
@@ -39,7 +29,7 @@ jobs:
           platforms;android-34
           build-tools;34.0.0
 
-    # 3) Create debug keystore so APK is properly signed (v1+v2)
+    # Debug keystore (APK signed থাকবে)
     - name: Generate debug keystore
       run: |
         mkdir -p $HOME/.android
@@ -49,11 +39,14 @@ jobs:
           -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 \
           -dname "CN=Android Debug,O=Android,C=US"
 
-    # 4) Build the APK with the newly-created wrapper
+    # Wrapper ছাড়াই Gradle চালাও
     - name: Build Debug APK
-      run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
+      uses: gradle/gradle-build-action@v3
+      with:
+        gradle-version: 8.7
+        arguments: ":app:assembleDebug --stacktrace --no-daemon"
 
-    # 5) Upload the APK
+    # APK artifact আপলোড
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
       with:
